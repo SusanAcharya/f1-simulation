@@ -486,30 +486,30 @@ export class RaceSimulation {
     return { points, tokens }
   }
 
-  private calculateDNFProbability(participant: RaceParticipant): number {
-    const car = participant.car
+  // private calculateDNFProbability(participant: RaceParticipant): number {
+  //   const car = participant.car
     
-    // DNF Probability Formula (reduced base to lower overall DNF rate)
-    // Base Rate = 0.02 (2% base DNF chance)
-    const baseRate = 0.02
+  //   // DNF Probability Formula (reduced base to lower overall DNF rate)
+  //   // Base Rate = 0.02 (2% base DNF chance)
+  //   const baseRate = 0.02
     
-    // Condition Factor = 2^((100 - Condition) ÷ 20)
-    const conditionFactor = Math.pow(2, (100 - car.condition) / 20)
+  //   // Condition Factor = 2^((100 - Condition) ÷ 20)
+  //   const conditionFactor = Math.pow(2, (100 - car.condition) / 20)
     
-    // Reliability Factor = (110 - Car Durability) ÷ 100
-    const reliabilityFactor = (110 - car.stats.durability) / 100
+  //   // Reliability Factor = (110 - Car Durability) ÷ 100
+  //   const reliabilityFactor = (110 - car.stats.durability) / 100
     
-    // Distance Factor = Race Distance (1.0 for normal race)
-    const distanceFactor = 1.0
+  //   // Distance Factor = Race Distance (1.0 for normal race)
+  //   const distanceFactor = 1.0
     
-    // DNF Probability = Base Rate × Condition Factor × Reliability Factor × Distance Factor
-    let dnfProbability = baseRate * conditionFactor * reliabilityFactor * distanceFactor
+  //   // DNF Probability = Base Rate × Condition Factor × Reliability Factor × Distance Factor
+  //   let dnfProbability = baseRate * conditionFactor * reliabilityFactor * distanceFactor
     
-    // Maximum DNF Probability = 0.2 (capped at 20%)
-    dnfProbability = Math.min(dnfProbability, 0.2)
+  //   // Maximum DNF Probability = 0.2 (capped at 20%)
+  //   dnfProbability = Math.min(dnfProbability, 0.2)
     
-    return dnfProbability
-  }
+  //   return dnfProbability
+  // }
 
   // Tick-level DNF probability derived from crash/failure/blowout chances
   private calculateTickDNFProbability(participant: RaceParticipant): number {
