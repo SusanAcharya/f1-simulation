@@ -7,14 +7,18 @@ import { Car } from '../models/Car.js'
 import type { LoginRequest, RegisterRequest, AuthResponse } from '../types/auth.js'
 
 const generateToken = (userId: string, username: string, email: string): string => {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET is not defined')
+  }
   return jwt.sign(
     { userId, username, email },
-    process.env.JWT_SECRET!,
+    secret,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   )
 }
 
-export const register = async (req: Request<{}, AuthResponse, RegisterRequest>, res: Response) => {
+export const register = async (req: Request<{}, AuthResponse, RegisterRequest>, res: Response): Promise<void> => {
   try {
     const { username, email, password } = req.body
 
@@ -24,11 +28,12 @@ export const register = async (req: Request<{}, AuthResponse, RegisterRequest>, 
     })
 
     if (existingUser) {
-      return res.status(400).json({
+      res.status(400).json({
         error: existingUser.username === username 
           ? 'Username already taken' 
           : 'Email already registered'
       })
+      return
     }
 
     // Create driver and car for the new user
@@ -105,20 +110,22 @@ export const register = async (req: Request<{}, AuthResponse, RegisterRequest>, 
   }
 }
 
-export const login = async (req: Request<{}, AuthResponse, LoginRequest>, res: Response) => {
+export const login = async (req: Request<{}, AuthResponse, LoginRequest>, res: Response): Promise<void> => {
   try {
     const { username, password } = req.body
 
     // Find user by username
     const user = await User.findOne({ username })
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' })
+      res.status(401).json({ error: 'Invalid credentials' })
+      return
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password)
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid credentials' })
+      res.status(401).json({ error: 'Invalid credentials' })
+      return
     }
 
     const token = generateToken(user.id, user.username, user.email)
@@ -137,13 +144,14 @@ export const login = async (req: Request<{}, AuthResponse, LoginRequest>, res: R
   }
 }
 
-export const getProfile = async (req: Request, res: Response) => {
+export const getProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id
 
     const user = await User.findById(userId)
     if (!user) {
-      return res.status(404).json({ error: 'User not found' })
+      res.status(404).json({ error: 'User not found' })
+      return
     }
 
     res.json({
@@ -165,13 +173,14 @@ export const getProfile = async (req: Request, res: Response) => {
   }
 }
 
-export const updateUserPictures = async (req: Request, res: Response) => {
+export const updateUserPictures = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user?.userId
     const { profilePic, carPic } = req.body
 
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' })
+      res.status(401).json({ error: 'Unauthorized' })
+      return
     }
 
     const updateData: any = {}
@@ -185,7 +194,8 @@ export const updateUserPictures = async (req: Request, res: Response) => {
     )
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' })
+      res.status(404).json({ error: 'User not found' })
+      return
     }
 
     res.json({
@@ -210,13 +220,14 @@ export const updateUserPictures = async (req: Request, res: Response) => {
   }
 }
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
 
     const user = await User.findById(id)
     if (!user) {
-      return res.status(404).json({ error: 'User not found' })
+      res.status(404).json({ error: 'User not found' })
+      return
     }
 
     const driver = await Driver.findOne({ userId: user.id })

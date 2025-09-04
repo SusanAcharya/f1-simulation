@@ -298,7 +298,7 @@ export const getRaceHistory = async (req: Request, res: Response): Promise<void>
       const userResult = race.results?.find((r: any) => r.userId === userId)
       return {
         id: race._id.toString(),
-        date: race.createdAt?.toISOString() || new Date().toISOString(),
+        date: (race as any).createdAt?.toISOString() || new Date().toISOString(),
         track: race.track || 'Unknown Track',
         winner: race.results?.find((r: any) => r.position === 1)?.userId || 'Unknown',
         participants: race.results?.length || 0,
