@@ -1,0 +1,161 @@
+@use 'sass:color';
+@import './variables';
+
+@mixin button-pixel($bg: $color-primary, $text: white) {
+  background: $bg;
+  color: $text;
+  border: 2px solid color.adjust($bg, $lightness: -20%);
+  padding: $space-3 $space-4;
+  border-radius: $radius-md;
+  font-family: $font-display;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover {
+    background: color.adjust($bg, $lightness: 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    
+    &::before {
+      transform: translateX(100%);
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: transform 0.6s ease;
+  }
+}
+
+@mixin card($padding: $space-4) {
+  background: $color-surface;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-lg;
+  padding: $padding;
+  box-shadow: $shadow-1;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-2;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+@mixin input {
+  background: $color-surface-2;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: $radius-md;
+  color: $color-text;
+  padding: $space-2 $space-3;
+  font-family: $font-body;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.2);
+    transform: scale(1.02);
+  }
+  
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+@mixin nav-item($bg: $color-surface, $accent: $color-primary) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-2;
+  background: $bg;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  text-decoration: none;
+  color: $color-text;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover {
+    background: color.adjust($bg, $lightness: 5%);
+    border-color: $accent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    
+    .nav-icon {
+      transform: scale(1.1);
+      color: $accent;
+    }
+    
+    .nav-label {
+      color: $accent;
+      transform: translateY(-2px);
+    }
+    
+    &::before {
+      transform: translateX(100%);
+    }
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: transform 0.6s ease;
+  }
+  
+  .nav-icon {
+    font-size: 24px;
+    transition: all 0.3s ease;
+    z-index: 2;
+    position: relative;
+  }
+  
+  .nav-label {
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    z-index: 2;
+    position: relative;
+  }
+}
+
+@mixin scrollbars($thumb: $color-surface-2, $track: transparent) {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: $track;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $thumb;
+    border-radius: 10px;
+    border: 2px solid $track;
+  }
+}
+

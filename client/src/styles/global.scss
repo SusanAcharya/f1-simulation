@@ -1,0 +1,368 @@
+@use 'sass:color';
+@import './variables';
+@import './mixins';
+@import './race';
+
+// Mobile-first responsive design
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-body;
+  background: $color-bg;
+  color: $color-text;
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-bottom: 80px; // Ensure content doesn't get hidden behind bottom nav
+  
+  // Pixelated background pattern
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  
+  @media (max-width: 768px) {
+    padding-bottom: 70px; // Adjust for mobile nav height
+  }
+  
+  @media (max-width: 480px) {
+    padding-bottom: 60px; // Adjust for small mobile nav height
+  }
+}
+
+// Responsive container
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $space-4;
+  
+  @media (max-width: 768px) {
+    padding: 0 $space-3;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 $space-2;
+  }
+}
+
+// Responsive page layout
+.page {
+  padding: $space-4 0;
+  min-height: calc(100vh - 120px); // Account for nav height
+  padding-bottom: calc(80px + $space-4); // Add bottom padding for fixed nav
+  
+  @media (max-width: 768px) {
+    padding: $space-3 0;
+    min-height: calc(100vh - 100px);
+    padding-bottom: calc(70px + $space-3); // Adjust for mobile nav height
+  }
+  
+  @media (max-width: 480px) {
+    padding: $space-2 0;
+    min-height: calc(100vh - 80px);
+    padding-bottom: calc(60px + $space-2); // Adjust for small mobile nav height
+  }
+}
+
+// Responsive typography
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-display;
+  margin: 0;
+  line-height: 1.2;
+  
+  @media (max-width: 768px) {
+    line-height: 1.1;
+  }
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  
+  @media (max-width: 480px) {
+    font-size: 1.8rem;
+  }
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+// Responsive grid layouts
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $space-4;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: $space-3;
+  }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $space-4;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $space-3;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: $space-2;
+  }
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $space-4;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $space-3;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: $space-2;
+  }
+}
+
+// Responsive cards
+.card {
+  @include card;
+  padding: $space-4;
+  
+  @media (max-width: 768px) {
+    padding: $space-3;
+  }
+  
+  @media (max-width: 480px) {
+    padding: $space-2;
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    
+    @media (max-width: 768px) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+// Responsive buttons
+.button-primary, .button-secondary {
+  @include button-pixel;
+  font-size: 1rem;
+  padding: $space-3 $space-4;
+  
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: $space-2 $space-3;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: $space-2;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+// Responsive form elements
+input, textarea, select {
+  @include input;
+  font-size: 1rem;
+  padding: $space-2 $space-3;
+  
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: $space-2;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: $space-2;
+  }
+}
+
+// Responsive navigation
+.nav-item {
+  @include nav-item($color-surface, $color-primary);
+  
+  @media (max-width: 768px) {
+    padding: $space-2;
+    
+    .nav-label {
+      font-size: 8px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: $space-1;
+    
+    .nav-label {
+      font-size: 7px;
+    }
+  }
+}
+
+// Responsive spacing utilities
+.mobile-hidden {
+  @media (max-width: 768px) {
+    display: none !important;
+  }
+}
+
+.mobile-only {
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: block !important;
+  }
+}
+
+// Responsive animations
+@media (max-width: 768px) {
+  .animate-on-mobile {
+    animation: none;
+    
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// Mobile-friendly touch targets
+@media (max-width: 768px) {
+  button, .nav-item, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+// Responsive text sizing
+@media (max-width: 768px) {
+  .muted {
+    font-size: 0.8rem;
+  }
+  
+  .text-small {
+    font-size: 0.7rem;
+  }
+}
+
+// Responsive margins and padding
+@media (max-width: 768px) {
+  .mb-mobile-2 { margin-bottom: $space-2; }
+  .mb-mobile-3 { margin-bottom: $space-3; }
+  .p-mobile-2 { padding: $space-2; }
+  .p-mobile-3 { padding: $space-3; }
+}
+
+@media (max-width: 480px) {
+  .mb-mobile-1 { margin-bottom: $space-1; }
+  .mb-mobile-2 { margin-bottom: $space-2; }
+  .p-mobile-1 { padding: $space-1; }
+  .p-mobile-2 { padding: $space-2; }
+}
+
+// Bottom navigation spacing utilities
+.bottom-nav-spacing {
+  padding-bottom: 100px; // Extra spacing for bottom nav
+  
+  @media (max-width: 768px) {
+    padding-bottom: 90px;
+  }
+  
+  @media (max-width: 480px) {
+    padding-bottom: 80px;
+  }
+}
+
+// Utility classes
+.retro-text {
+  font-family: $font-display;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+}
+
+.retro-body {
+  font-family: $font-body;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.futuristic-text {
+  font-family: $font-futuristic;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+// Animation keyframes
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(245, 166, 35, 0.5); }
+  50% { box-shadow: 0 0 30px rgba(245, 166, 35, 0.8); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+// Animation utility classes
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse { animation: pulse 2s ease-in-out infinite; }
+.animate-glow { animation: glow 2s ease-in-out infinite; }
+.animate-slide-in-left { animation: slideInLeft 0.6s ease-out; }
+.animate-slide-in-right { animation: slideInRight 0.6s ease-out; }
+.animate-slide-in-up { animation: slideInUp 0.6s ease-out; }
+

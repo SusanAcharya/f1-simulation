@@ -1,0 +1,616 @@
+// Race Track Styles
+.race-track-container {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 212, 170, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  
+  .race-track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    
+    .race-info {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      
+      .lap-counter {
+        color: #00d4aa;
+        font-weight: bold;
+      }
+      
+      .participant-count {
+        color: #f5a623;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  .race-track {
+    position: relative;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 212, 170, 0.1));
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    
+    .track-outline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      
+      .track-start-finish {
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        transform: translateY(-50%);
+        
+        .start-finish-line {
+          font-size: 24px;
+          filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.8));
+        }
+      }
+      
+      .track-section {
+        position: absolute;
+        background: rgba(0, 212, 170, 0.1);
+        border: 1px solid rgba(0, 212, 170, 0.3);
+        
+        &.track-straight-1 {
+          top: 20%;
+          left: 60px;
+          width: 120px;
+          height: 60px;
+        }
+        
+        &.track-turn-1 {
+          top: 20%;
+          left: 180px;
+          width: 60px;
+          height: 60px;
+          border-radius: 0 30px 0 0;
+        }
+        
+        &.track-straight-2 {
+          top: 20%;
+          left: 240px;
+          width: 80px;
+          height: 60px;
+        }
+        
+        &.track-turn-2 {
+          top: 20%;
+          left: 320px;
+          width: 60px;
+          height: 60px;
+          border-radius: 0 0 30px 0;
+        }
+        
+        &.track-straight-3 {
+          top: 80%;
+          left: 320px;
+          width: 80px;
+          height: 60px;
+        }
+        
+        &.track-turn-3 {
+          top: 80%;
+          left: 240px;
+          width: 60px;
+          height: 60px;
+          border-radius: 30px 0 0 0;
+        }
+        
+        &.track-straight-4 {
+          top: 80%;
+          left: 60px;
+          width: 120px;
+          height: 60px;
+        }
+        
+        &.track-turn-4 {
+          top: 80%;
+          left: 180px;
+          width: 60px;
+          height: 60px;
+          border-radius: 0 0 0 30px;
+        }
+      }
+    }
+    
+    .race-car {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid rgba(0, 212, 170, 0.6);
+      border-radius: 20px;
+      min-width: 120px;
+      transition: all 0.3s ease;
+      
+      &.retired {
+        opacity: 0.5;
+        border-color: rgba(233, 69, 96, 0.6);
+        background: rgba(233, 69, 96, 0.2);
+      }
+      
+      .car-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      
+      .car-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        
+        .car-username {
+          font-size: 12px;
+          font-weight: bold;
+          color: white;
+          white-space: nowrap;
+        }
+        
+        .car-position {
+          font-size: 10px;
+          color: #00d4aa;
+          font-weight: bold;
+        }
+        
+        .car-lap {
+          font-size: 10px;
+          color: #f5a623;
+          font-weight: bold;
+        }
+      }
+      
+      .position-indicator {
+        margin-left: auto;
+        
+        .leader { font-size: 20px; }
+        .second { font-size: 18px; }
+        .third { font-size: 16px; }
+        .position {
+          font-size: 14px;
+          color: #00d4aa;
+          font-weight: bold;
+        }
+      }
+      
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(0, 212, 170, 0.4);
+      }
+    }
+  }
+  
+  .lap-progress {
+    .progress-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      
+      .progress-bar-container {
+        .progress-label {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 4px;
+          font-size: 12px;
+          
+          .driver-name {
+            color: white;
+            font-weight: bold;
+          }
+          
+          .lap-info {
+            color: #f5a623;
+            font-weight: bold;
+          }
+        }
+        
+        .progress-bar {
+          height: 8px;
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 4px;
+          overflow: hidden;
+          
+          .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Race Countdown Styles
+.race-countdown-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+  .countdown-ready {
+    font-size: 100px;
+    font-weight: bold;
+    color: #f5a623;
+    text-shadow: 0 0 30px rgba(245, 166, 35, 0.8);
+    animation: readyPulse 1.5s ease-in-out;
+  }
+  
+  .countdown-number {
+    font-size: 120px;
+    font-weight: bold;
+    color: #00ff88;
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+    animation: pulse 1s ease-in-out;
+  }
+  
+  .countdown-go {
+    font-size: 140px;
+    font-weight: bold;
+    color: #00ff88;
+    text-shadow: 0 0 40px rgba(0, 255, 136, 0.8);
+    animation: goPulse 0.5s ease-in-out;
+  }
+}
+
+@keyframes readyPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes goPulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes currentUserGlow {
+  0% { 
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    border-left-color: #00ffff;
+  }
+  100% { 
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    border-left-color: #00ccff;
+  }
+}
+
+@keyframes badgePulse {
+  0% { 
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transform: scale(1);
+  }
+  100% { 
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    transform: scale(1.05);
+  }
+}
+
+// Enhanced Live Race Styles
+.live-race-container {
+  .race-controls {
+    background: rgba(0, 212, 170, 0.1);
+    border: 2px solid rgba(0, 212, 170, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    
+    .race-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      
+      .status-info {
+        h4 {
+          color: #00d4aa;
+          margin: 0 0 8px 0;
+        }
+        
+        .status-details {
+          display: flex;
+          gap: 16px;
+          font-size: 14px;
+          
+          .lap-info {
+            color: #00d4aa;
+            font-weight: bold;
+          }
+          
+          .participant-count {
+            color: #f5a623;
+            font-weight: bold;
+          }
+        }
+      }
+      
+      .race-actions {
+        display: flex;
+        gap: 12px;
+        
+        .button-primary {
+          background: linear-gradient(135deg, #00d4aa, #00b894);
+          border: none;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+          }
+        }
+        
+        .button-secondary {
+          background: linear-gradient(135deg, #f5a623, #f39c12);
+          border: none;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 166, 35, 0.4);
+          }
+        }
+      }
+    }
+  }
+  
+  .live-leaderboard {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(245, 166, 35, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    
+    h3 {
+      color: #f5a623;
+      margin-bottom: 16px;
+    }
+    
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      
+      thead {
+        tr {
+          background: rgba(0, 0, 0, 0.3);
+          border-bottom: 2px solid #00d4aa;
+          
+          th {
+            padding: 12px 8px;
+            text-align: left;
+            color: #00d4aa;
+            font-weight: bold;
+          }
+        }
+      }
+      
+      tbody {
+        tr {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.3s ease;
+          
+          &:hover {
+            background: rgba(0, 212, 170, 0.1);
+          }
+          
+          &.leader {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 4px solid #00ff88;
+          }
+          
+          &.podium {
+            background: rgba(245, 166, 35, 0.1);
+            border-left: 4px solid #f5a623;
+          }
+          
+          &.retired {
+            background: rgba(233, 69, 96, 0.1);
+            border-left: 4px solid #e94560;
+            opacity: 0.7;
+          }
+          
+          &.current-user {
+            background: rgba(0, 255, 255, 0.15);
+            border-left: 4px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            animation: currentUserGlow 2s ease-in-out infinite alternate;
+          }
+          
+          &.gold {
+            background: rgba(255, 215, 0, 0.15);
+            border-left: 4px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            animation: goldGlow 2s ease-in-out infinite alternate;
+          }
+          
+          &.silver {
+            background: rgba(192, 192, 192, 0.15);
+            border-left: 4px solid #c0c0c0;
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+            animation: silverGlow 2s ease-in-out infinite alternate;
+          }
+          
+          &.bronze {
+            background: rgba(205, 127, 50, 0.15);
+            border-left: 4px solid #cd7f32;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+            animation: bronzeGlow 2s ease-in-out infinite alternate;
+          }
+          
+          &.dnf {
+            background: rgba(233, 69, 96, 0.15);
+            border-left: 4px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+            opacity: 0.8;
+          }
+          
+          td {
+            padding: 12px 8px;
+            
+            &.position {
+              text-align: center;
+              font-weight: bold;
+              font-size: 18px;
+              
+              &.leader { 
+                color: #ffd700; 
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+                font-size: 20px;
+              }
+              &.second { 
+                color: #c0c0c0; 
+                text-shadow: 0 0 10px rgba(192, 192, 192, 0.8);
+                font-size: 19px;
+              }
+              &.third { 
+                color: #cd7f32; 
+                text-shadow: 0 0 10px rgba(205, 127, 50, 0.8);
+                font-size: 18px;
+              }
+              &.other { color: #00d4aa; }
+            }
+            
+            &.driver-info {
+              .driver-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                margin-right: 12px;
+                
+                img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                }
+              }
+              
+              .driver-details {
+                .driver-name {
+                  font-weight: bold;
+                  color: white;
+                  margin-bottom: 4px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  
+                  .current-user-badge {
+                    background: linear-gradient(135deg, #00ffff, #0080ff);
+                    color: #000;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 10px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+                    animation: badgePulse 1.5s ease-in-out infinite alternate;
+                  }
+                }
+                
+                .driver-stats {
+                  font-size: 12px;
+                  color: #00d4aa;
+                }
+              }
+            }
+            
+            &.lap-time {
+              font-family: 'Courier New', monospace;
+              color: #00d4aa;
+              font-weight: bold;
+            }
+            
+            &.best-lap {
+              font-family: 'Courier New', monospace;
+              color: #f5a623;
+              font-weight: bold;
+            }
+            
+            &.gap {
+              font-family: 'Courier New', monospace;
+              color: #e94560;
+              font-weight: bold;
+            }
+            
+            &.status {
+              text-align: center;
+              font-weight: bold;
+              
+              &.running { color: #00ff88; }
+              &.retired { color: #e94560; }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Keyframe animations for podium and user highlighting
+@keyframes currentUserGlow {
+  0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); }
+}
+
+@keyframes goldGlow {
+  0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+  100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
+}
+
+@keyframes silverGlow {
+  0% { box-shadow: 0 0 20px rgba(192, 192, 192, 0.3); }
+  100% { box-shadow: 0 0 30px rgba(192, 192, 192, 0.6); }
+}
+
+@keyframes bronzeGlow {
+  0% { box-shadow: 0 0 20px rgba(205, 127, 50, 0.3); }
+  100% { box-shadow: 0 0 30px rgba(205, 127, 50, 0.6); }
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
