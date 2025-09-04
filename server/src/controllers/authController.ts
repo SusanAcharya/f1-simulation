@@ -13,8 +13,8 @@ const generateToken = (userId: string, username: string, email: string): string 
   }
   return jwt.sign(
     { userId, username, email },
-    secret,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    secret as jwt.Secret,
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as jwt.SignOptions
   )
 }
 

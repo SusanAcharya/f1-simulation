@@ -25,7 +25,12 @@ export const authenticateToken = async (
       return
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
+    const secret = process.env.JWT_SECRET
+    if (!secret) {
+      res.status(500).json({ error: 'JWT secret not configured' })
+      return
+    }
+    const decoded = jwt.verify(token, secret as jwt.Secret) as JwtPayload
     
     // Verify user still exists
     const user = await User.findById(decoded.userId).select('_id username email')
