@@ -4,7 +4,6 @@ import { useGameStore, createDefaultState } from '../store/useGameStore'
 
 export default function Facilities() {
   const userProfile = useGameStore(s => s.userProfile)
-  const setUserProfile = useGameStore(s => s.setUserProfile)
   const [upgrading, setUpgrading] = useState<string | null>(null)
 
   useEffect(() => {
