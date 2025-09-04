@@ -1,97 +1,239 @@
-# 🏎️ Vibe with Life - Racing Simulation Game
+# 🏎️ Vibe With Life - Racing Simulation Game
 
-A multiplayer racing simulation game where players compete in real-time races, manage their drivers and cars, and climb the global leaderboard.
+A multiplayer racing simulation game where players manage drivers, cars, and facilities to compete in exciting races and climb the leaderboard!
 
 ## 🎮 Game Overview
 
-**Vibe with Life** is an immersive racing simulation where strategy meets speed. Players create and customize their racing team, upgrade facilities, and compete in live races that happen every 5 minutes.
+**Vibe With Life** is a strategic racing game where players:
 
-### 🏁 Core Features
+- **Race** in 10-lap competitions every 5 minutes
+- **Manage** driver skills and car performance
+- **Upgrade** training facilities and warehouses
+- **Compete** for points, tokens, and glory
+- **Track** performance with detailed statistics
 
-- **Real-time Racing**: 10-lap races with live leaderboards and position changes
-- **Driver & Car Management**: Customize stats, names, and upgrade performance
-- **Facility Upgrades**: Training facilities and warehouses that boost your team
-- **Global Competition**: Race against all players worldwide
-- **Reward System**: Earn points and tokens through racing and achievements
-- **Profile System**: Track your racing history, wins, podiums, and statistics
+## ✨ Key Features
 
-### 🏆 Racing System
+### 🏁 Racing System
+- **Real-time races** with 10 laps lasting 45-60 seconds each
+- **F1-style positioning** based on laps completed, progress, and lap times
+- **Dynamic performance** influenced by driver stats, car condition, and RNG
+- **Live leaderboard** with position changes and gap calculations
+- **Race history** tracking wins, podiums, and points earned
 
-- **Race Frequency**: Every 5 minutes
-- **Race Duration**: ~5 minutes (10 laps)
-- **Performance Factors**: 
-  - Driver stats (Cornering, Overtaking, Defending, Aggression, Composure)
-  - Car stats (Speed, Acceleration, Braking, Aerodynamics, Grip, Durability)
-  - Car condition and upgrades
-  - Random factors for unpredictability
+### 👤 Driver Management
+- **5 core stats**: Cornering, Overtaking, Defending, Aggression, Composure
+- **Stat upgrades** using earned points
+- **Performance impact** on race results
+- **Custom naming** and personalization
 
-### 🛠️ Management Features
+### 🚗 Car Management
+- **8 performance stats**: Speed, Acceleration, Braking, Aerodynamics, Fuel Efficiency, Tire Wear, Grip, Durability
+- **Condition system** that degrades over time
+- **Condition boosting** with tokens
+- **Stat point allocation** for performance improvements
 
-- **Driver Stats**: Upgrade cornering, overtaking, defending, aggression, and composure
-- **Car Stats**: Improve speed, acceleration, braking, aerodynamics, fuel efficiency, tire wear, grip, and durability
-- **Facilities**: 
-  - Training Facility: Better condition recovery and driver stat points
-  - Warehouse: More car stat points and reduced condition degradation
-- **Car Condition**: Maintain your car's performance with repairs and boosts
+### 🏗️ Facility Upgrades
+- **Training Facility**: Improves condition recovery and provides driver stat points
+- **Warehouse**: Provides car stat points and reduces condition degradation
+- **Token-based upgrades** with increasing costs per level
 
-### 🎯 Progression System
+### 📊 Statistics & Leaderboards
+- **Global leaderboard** ranked by total points
+- **Detailed race history** with lap times and positions
+- **Profile pages** showing comprehensive stats
+- **Performance tracking** across all races
 
-- **Points**: Earned through race performance (F1-style scoring: 25, 18, 15, 12, 10, 8, 6, 4, 2, 1)
-- **Tokens**: Used for facility upgrades and car condition boosts
-- **Stat Points**: Awarded after races to upgrade driver and car performance
-- **Global Leaderboard**: Compete for the top spot worldwide
+## 🛠️ Technology Stack
 
-## 🚀 Technology Stack
+### Frontend
+- **React 18** with TypeScript
+- **Framer Motion** for smooth animations
+- **SCSS** for styling with custom themes
+- **React Router** for navigation
+- **Zustand** for state management
+- **Axios** for API communication
 
-- **Frontend**: React + TypeScript + Framer Motion + SCSS
-- **Backend**: Node.js + Express + MongoDB
-- **Authentication**: JWT-based with session persistence
-- **Real-time Updates**: WebSocket integration for live race data
-- **Responsive Design**: Mobile and web-friendly interface
+### Backend
+- **Node.js** with Express
+- **TypeScript** for type safety
+- **MongoDB** with Mongoose ODM
+- **JWT** authentication
+- **RESTful APIs** for all game operations
+
+### Database Schema
+- **Users**: Authentication, tokens, points, facility levels
+- **Drivers**: Stats, available upgrade points
+- **Cars**: Performance stats, condition, upgrade points
+- **Races**: Results, lap times, participant data
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v16 or higher)
+- MongoDB (v4.4 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd vibe-with-life
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Install server dependencies
+   cd server
+   npm install
+   
+   # Install client dependencies
+   cd ../client
+   npm install
+   ```
+
+3. **Environment Setup**
+   ```bash
+   # Copy environment template
+   cd server
+   cp env.example .env
+   ```
+   
+   Configure your `.env` file:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/vibe-with-life
+   JWT_SECRET=your-super-secret-jwt-key
+   JWT_EXPIRES_IN=7d
+   PORT=3001
+   ```
+
+4. **Database Setup**
+   ```bash
+   # Start MongoDB (if not running)
+   mongod
+   
+   # Seed the database with initial data
+   cd server
+   npm run seed
+   ```
+
+5. **Start the application**
+   ```bash
+   # Terminal 1 - Start the server
+   cd server
+   npm run dev
+   
+   # Terminal 2 - Start the client
+   cd client
+   npm run dev
+   ```
+
+6. **Access the game**
+   - Open your browser to `http://localhost:5173`
+   - Register a new account or use seeded demo accounts
+   - Start racing!
+
+## 🎯 Game Mechanics
+
+### Race Performance Formula
+```
+Performance = ((Driver Score × 0.6) + (Car Score × 0.4)) × Condition Modifier × Random Factor
+
+Driver Score = (Cornering × 0.25) + (Overtaking × 0.20) + (Defending × 0.15) + (Composure × 0.25) + (Aggression × 0.15)
+Car Score = (Speed × 0.20) + (Acceleration × 0.15) + (Braking × 0.15) + (Aero × 0.15) + (Grip × 0.20) + (Fuel × 0.05) + (TireWear × 0.05) + (Durability × 0.05)
+```
+
+### Points System
+- **1st Place**: 25 points
+- **2nd Place**: 18 points
+- **3rd Place**: 15 points
+- **4th-10th**: 12, 10, 8, 6, 4, 2, 1 points
+- **Tokens**: Earned based on position and performance
+
+### DNF (Did Not Finish) System
+- **Base DNF rate**: 2% per lap after lap 4
+- **Condition factor**: Higher condition = lower DNF chance
+- **Reliability factor**: Car durability affects DNF probability
+- **Maximum DNF rate**: Capped at 20%
 
 ## 🎨 UI/UX Features
 
-- **Retro Gaming Aesthetic**: Mario Smash Karts inspired design
-- **Smooth Animations**: Framer Motion for fluid transitions
-- **Live Updates**: Real-time race progress and leaderboard changes
-- **Profile Pictures & Car Images**: Customizable visual identity
-- **Podium Celebrations**: Gold, silver, bronze highlighting for top finishers
+### Design Philosophy
+- **Retro pixelated** game aesthetic inspired by Mario Kart
+- **Smooth animations** with Framer Motion
+- **Responsive design** for mobile and desktop
+- **Intuitive navigation** with clear visual hierarchy
 
-## 🏁 Getting Started
+### Key UI Components
+- **Live race viewer** with real-time position updates
+- **Interactive stat bars** with upgrade previews
+- **Confirmation dialogs** for stat upgrades
+- **Podium celebrations** with gold/silver/bronze styling
+- **Profile customization** with picture selection
 
-1. **Register/Login**: Create your racing identity
-2. **Setup**: Choose your profile picture and car image
-3. **Customize**: Name your driver and car
-4. **Race**: Join live races and compete for glory
-5. **Upgrade**: Use earned points and tokens to improve your team
-6. **Climb**: Rise through the global leaderboard
+## 📱 Mobile Support
 
-## 🎮 Game Flow
+The game is fully responsive and optimized for:
+- **Mobile devices** with touch-friendly controls
+- **Tablet interfaces** with larger layouts
+- **Desktop browsers** with full feature access
 
-1. **Landing Page**: View upcoming races and leaderboard
-2. **Dashboard**: Overview of your team and next race countdown
-3. **Live Race**: Watch real-time racing action with live leaderboard
-4. **Results**: See your performance, earned points, and tokens
-5. **Management**: Upgrade your driver, car, and facilities
-6. **Profile**: Track your racing history and statistics
-7. **Leaderboard**: See how you rank globally
+## 🔧 Development
 
-## 🏆 Race Mechanics
+### Available Scripts
 
-- **F1-Style Positioning**: Based on laps completed, progress, best lap time, then total time
-- **DNF System**: Realistic retirement mechanics with probability calculations
-- **Condition Impact**: Car condition affects performance and reliability
-- **Track Influence**: Different tracks may favor different driving styles
-- **Dynamic Lap Times**: 45-60 second base times with performance modifiers
+**Server:**
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run seed         # Seed database with demo data
+```
 
-## 🎯 Competitive Features
+**Client:**
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+```
 
-- **Global Leaderboard**: Real-time ranking of all players
-- **Race History**: Detailed records of past performances
-- **Statistics Tracking**: Wins, podiums, average position, total points
-- **Profile Pages**: Public profiles for all players
-- **Achievement System**: Track your racing accomplishments
+### Project Structure
+```
+vibe-with-life/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── services/       # API and game services
+│   │   ├── store/          # State management
+│   │   ├── styles/         # SCSS stylesheets
+│   │   └── types/          # TypeScript definitions
+├── server/                 # Node.js backend
+│   ├── src/
+│   │   ├── controllers/    # Route handlers
+│   │   ├── models/         # Database models
+│   │   ├── routes/         # API routes
+│   │   ├── middleware/     # Express middleware
+│   │   └── scripts/        # Database seeding
+└── README.md
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🎮 Play Now!
+
+Ready to start your racing career? Register an account and begin your journey to become the ultimate racing champion in **Vibe With Life**!
 
 ---
 
-*Ready to become the ultimate racing champion? Start your engines and join the competition!* 🏁
+*Built with ❤️ using React, Node.js, and MongoDB*

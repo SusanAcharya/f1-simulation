@@ -21,9 +21,16 @@ export type RaceParticipant = {
   lapTimes: number[] // array of lap times in milliseconds
   currentLapPlannedMs?: number
   currentLapElapsedMs?: number
+  currentEffectiveLapMs?: number
   earnedPoints?: number
   earnedTokens?: number
   dnf?: boolean // Did Not Finish
+  // Dynamic per-race systems
+  fuelRemaining?: number // 0-100 (starts 100)
+  tireRemaining?: number // 0-100 (remaining tread)
+  hasPitted?: boolean
+  pitting?: boolean
+  pitTicksRemaining?: number // in-game seconds remaining in pit
 }
 
 export type RaceState = {
@@ -43,7 +50,8 @@ export class RaceSimulation {
   private raceState: RaceState
   private animationFrame: number | null = null
   private lastUpdate: number = 0
-  private updateInterval: number = 50 // 50ms = 20 FPS for smooth animation
+  // Simulation granularity: 1-second in-game ticks
+  private updateInterval: number = 1000 // 1000ms = 1 in-game second per tick
   private storageKey: string = 'vibe-race-simulation'
   private finishCounter: number = 0
   private callbacks: {
@@ -191,7 +199,7 @@ export class RaceSimulation {
   }
 
   private updateRace(deltaTime: number) {
-    // Update each participant's progress
+    // Update each participant's progress per 1-second in-game tick
     this.raceState.participants.forEach(participant => {
       if (participant.retired || participant.finished) return
 
@@ -201,13 +209,16 @@ export class RaceSimulation {
         participant.currentLapElapsedMs = 0
       }
 
-      // Calculate progress proportionally to planned lap duration (smooth and consistent)
-      const progressIncrement = (deltaTime / participant.currentLapPlannedMs) * 100
+      // Compute effective lap time this tick using emergent formula components
+      const effectiveLapMs = this.computeEffectiveLapMs(participant)
+      participant.currentEffectiveLapMs = effectiveLapMs
       
-      // Probabilistic DNF is only possible after lap 4, and scaled to the step progress
+      // Convert tick to progress increment based on effective lap duration
+      const progressIncrement = (deltaTime / effectiveLapMs) * 100
+      
+      // DNF / accidents per tick – after lap 4
       if ((participant.currentLap || 1) > 4) {
-        const lapDnfProbability = this.calculateDNFProbability(participant)
-        const stepProbability = Math.max(0, Math.min(1, lapDnfProbability * (progressIncrement / 100)))
+        const stepProbability = this.calculateTickDNFProbability(participant)
         if (Math.random() < stepProbability) {
           participant.retired = true
           participant.dnf = true
@@ -357,8 +368,8 @@ export class RaceSimulation {
     
     // Convert progress difference to time gap using planned lap time for this participant
     const progressDiff = leaderProgress - participantProgress
-    const plannedMs = participant.currentLapPlannedMs || 60000
-    return (progressDiff / 100) * plannedMs / 1000 // seconds
+    const effectiveMs = participant.currentEffectiveLapMs || participant.currentLapPlannedMs || 60000
+    return (progressDiff / 100) * effectiveMs / 1000 // seconds
   }
 
   private checkRaceFinish() {
@@ -381,69 +392,13 @@ export class RaceSimulation {
   }
 
   private computePlannedLapMs(participant: RaceParticipant): number {
-    const driver = participant.driver
-    const car = participant.car
-    const driverScore = (driver.stats.cornering * 0.25) + 
-                       (driver.stats.overtaking * 0.20) + 
-                       (driver.stats.defending * 0.15) + 
-                       (driver.stats.composure * 0.25) + 
-                       (driver.stats.aggression * 0.15)
-    const carScore = (car.stats.speed * 0.20) + 
-                    (car.stats.acceleration * 0.15) + 
-                    (car.stats.braking * 0.15) + 
-                    (car.stats.aero * 0.15) + 
-                    (car.stats.grip * 0.20) + 
-                    (car.stats.fuel * 0.05) + 
-                    (car.stats.tireWear * 0.05) + 
-                    (car.stats.durability * 0.05)
-    const conditionModifier = 0.5 + (car.condition / 200)
-    const randomFactor = 0.95 + (Math.random() * 0.1)
-    const performance = ((driverScore * 0.6) + (carScore * 0.4)) * conditionModifier * randomFactor
-    const baseLapTime = 45000 + (100 - performance) * 150
-    // Clamp to 45s - 60s
-    return Math.max(45000, Math.min(60000, baseLapTime))
+    // Use emergent formula to derive a baseline lap plan; actual per-tick uses computeEffectiveLapMs
+    return this.computeEffectiveLapMs(participant)
   }
 
   private calculateCurrentLapTime(participant: RaceParticipant): number {
-    // Calculate time spent on current lap based on progress
-    const driver = participant.driver
-    const car = participant.car
-    
-    // Use the same performance formula as calculateBaseSpeed
-    // Driver Score = (Cornering × 0.25) + (Overtaking × 0.20) + (Defending × 0.15) + (Composure × 0.25) + (Aggression × 0.15)
-    const driverScore = (driver.stats.cornering * 0.25) + 
-                       (driver.stats.overtaking * 0.20) + 
-                       (driver.stats.defending * 0.15) + 
-                       (driver.stats.composure * 0.25) + 
-                       (driver.stats.aggression * 0.15)
-    
-    // Car Score = (Speed × 0.20) + (Acceleration × 0.15) + (Braking × 0.15) + (Aero × 0.15) + (Grip × 0.20) + (Fuel × 0.05) + (TireWear × 0.05) + (Durability × 0.05)
-    const carScore = (car.stats.speed * 0.20) + 
-                    (car.stats.acceleration * 0.15) + 
-                    (car.stats.braking * 0.15) + 
-                    (car.stats.aero * 0.15) + 
-                    (car.stats.grip * 0.20) + 
-                    (car.stats.fuel * 0.05) + 
-                    (car.stats.tireWear * 0.05) + 
-                    (car.stats.durability * 0.05)
-    
-    // Condition Modifier = 0.5 + (Condition ÷ 200)
-    const conditionModifier = 0.5 + (car.condition / 200)
-    
-    // Random Factor = 0.95 + (Random × 0.1)
-    const randomFactor = 0.95 + (Math.random() * 0.1)
-    
-    // Performance = ((Driver Score × 0.6) + (Car Score × 0.4)) × Condition Modifier × Random Factor
-    const performance = ((driverScore * 0.6) + (carScore * 0.4)) * conditionModifier * randomFactor
-    
-    // Base lap time (45s to 60s based on performance)
-    const baseLapTime = 45000 + (100 - performance) * 150
-    
-    // Add some variation for realism
-    const variation = (Math.random() - 0.5) * 2000 // ±1 second variation
-    const adjustedLapTime = Math.max(45000, baseLapTime + variation)
-    
-    return (participant.lapProgress / 100) * adjustedLapTime
+    // Emergent: current elapsed milliseconds is authoritative
+    return participant.currentLapElapsedMs || 0
   }
 
   private formatTime(milliseconds: number): string {
@@ -554,6 +509,60 @@ export class RaceSimulation {
     dnfProbability = Math.min(dnfProbability, 0.2)
     
     return dnfProbability
+  }
+
+  // Tick-level DNF probability derived from crash/failure/blowout chances
+  private calculateTickDNFProbability(participant: RaceParticipant): number {
+    const d = participant.driver.stats
+    const c = participant.car
+    // Crash chance - significantly reduced
+    const crashChance = ((d.aggression - 50) * (100 - d.composure)) / 50000 * this.randBetween(0.3, 0.7)
+    // Mechanical failure - much lower base rate
+    const failureChance = ((100 - c.stats.durability) * (100 - c.condition)) / 100000 * this.randBetween(0.3, 0.7)
+    // Tire blowout if over 100% wear (we treat tireRemaining falling under 0)
+    const tireOver = Math.max(0, 100 - (participant.tireRemaining ?? 100))
+    const blowoutChance = (tireOver) / 10000 * this.randBetween(0.3, 0.7)
+    // Combine conservatively with much lower overall probability
+    const total = crashChance + failureChance + blowoutChance
+    return Math.max(0, Math.min(0.001, total)) // cap 0.1% per tick (very low)
+  }
+
+  private randBetween(min: number, max: number): number {
+    return min + Math.random() * (max - min)
+  }
+
+  // Effective lap time based on simulation formula.txt
+  private computeEffectiveLapMs(participant: RaceParticipant): number {
+    const d = participant.driver.stats
+    const c = participant.car.stats
+    const condition = participant.car.condition
+    // Driver performance (using provided mapping emphasis)
+    const driverPerformance = (d.cornering * 0.25) + (d.aggression * 0.15) + (d.composure * 0.20)
+    // Car performance (speed/accel/brake/aero/grip emphasis)
+    const carPerformance = (c.speed * 0.25) + (c.acceleration * 0.20) + (c.braking * 0.15) + (c.aero * 0.15) + (c.grip * 0.15)
+    // Fuel penalty: approximate fuelRemaining (start 100, drops per tick)
+    if (participant.fuelRemaining === undefined) participant.fuelRemaining = 100
+    if (participant.tireRemaining === undefined) participant.tireRemaining = 100
+    const fuelEff = c.fuel
+    const fuelPenalty = (100 - (participant.fuelRemaining)) * (1 - fuelEff / 200)
+    // Tire penalty: remaining tread impacts
+    const tirePenalty = (100 - (participant.tireRemaining)) * (1 - c.grip / 200)
+    // Durability/condition penalty
+    const durabilityPenalty = (100 - condition) * (1 - c.durability / 200)
+    // Lap RNG with composure scaling
+    const lapRng = (Math.random() * 2 - 1) * (1 - d.composure / 100)
+    // Base lap time constant (55s baseline adjusted down/up). We'll target 45-60 range after scaling
+    const BLT = 55000
+    let lapMs = BLT - (driverPerformance + carPerformance) * 80 + (fuelPenalty + tirePenalty + durabilityPenalty) * 20 + lapRng * 500
+    // Clamp 45s - 60s
+    lapMs = Math.max(45000, Math.min(60000, lapMs))
+    // Degrade resources per tick proportionally to progress made
+    // const tickProgress = 1000 / lapMs // fraction of lap per 1s (not used explicitly)
+    participant.fuelRemaining = Math.max(0, (participant.fuelRemaining ?? 100) - (0.8 - (c.fuel / 200)) )
+    participant.tireRemaining = Math.max(0, (participant.tireRemaining ?? 100) - (0.7 - (c.tireWear / 200)) )
+    // Slight condition degradation
+    participant.car.condition = Math.max(0, participant.car.condition - 0.05)
+    return lapMs
   }
 
 

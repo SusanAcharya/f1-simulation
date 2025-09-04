@@ -1,0 +1,215 @@
+Perfect — let’s break this down **completely and clearly**. I’ll map **each formula to the stats it uses**, explain what it does, and then explain **how the race metrics (position, lap time, best lap, gap, status)** are calculated and displayed in your game.
+
+---
+
+# 🏁 Formulas & Stats Mapping
+
+### 1️⃣ **Driver Performance Formula**
+
+$$
+DriverPerformance = 0.25 \cdot Cornering + 0.15 \cdot Aggression + 0.20 \cdot Composure
+$$
+
+* **Stats used:**
+
+  * Cornering → determines speed in turns.
+  * Aggression → adds slight speed but increases risk.
+  * Composure → improves consistency.
+
+* **What it does:**
+
+  * Calculates **driver’s contribution to lap speed**.
+  * Higher value = faster lap potential.
+  * No RNG here; deterministic.
+
+---
+
+### 2️⃣ **Car Performance Formula**
+
+$$
+CarPerformance = 0.25 \cdot Speed + 0.20 \cdot Acceleration + 0.15 \cdot Braking + 0.15 \cdot Aerodynamics + 0.15 \cdot Grip
+$$
+
+* **Stats used:**
+
+  * Speed → top speed.
+  * Acceleration → time to reach top speed.
+  * Braking → reduces time in corners.
+  * Aerodynamics → affects straight-line efficiency.
+  * Grip → cornering stability.
+
+* **What it does:**
+
+  * Calculates **car’s contribution to lap speed**.
+  * Higher value → faster lap time.
+  * Deterministic.
+
+---
+
+### 3️⃣ **Fuel Penalty**
+
+$$
+FuelPenalty = FuelWeight \times (1 - FuelEff / 200)
+$$
+
+* **Stats used:** FuelEff.
+* **What it does:**
+
+  * Slows car based on fuel load.
+  * High FuelEff reduces penalty.
+  * Deterministic.
+
+---
+
+### 4️⃣ **Tire Penalty**
+
+$$
+TirePenalty = (100 - TireWear\%) \times (1 - Grip/200)
+$$
+
+* **Stats used:** Grip.
+* **What it does:**
+
+  * Degrades speed as tires wear.
+  * High Grip cars handle worn tires better.
+  * Deterministic.
+
+---
+
+### 5️⃣ **Durability / Condition Penalty**
+
+$$
+DurabilityPenalty = (100 - Condition\%) \times (1 - Durability/200)
+$$
+
+* **Stats used:** Durability, Condition%
+* **What it does:**
+
+  * Reflects slower laps due to car wear and risk of mechanical issues.
+  * Deterministic.
+
+---
+
+### 6️⃣ **Lap Randomness (Optional Drama)**
+
+$$
+LapRNG = Random(-1, 1) \times (1 - Composure/100)
+$$
+
+* **Stats used:** Composure
+* **What it does:**
+
+  * Adds **small random fluctuations per lap**.
+  * Lower composure → higher variation → unpredictable moments.
+
+---
+
+### 7️⃣ **Total Lap Time (Emergent)**
+
+$$
+LapTime = BLT - DriverPerformance - CarPerformance + FuelPenalty + TirePenalty + DurabilityPenalty + LapRNG
+$$
+
+* **All stats contribute indirectly.**
+* **What it does:**
+
+  * Calculates **effective lap time**.
+  * This is used to accumulate **distance per tick** in the simulation loop.
+  * Lap times emerge from **tick-based distance updates**, not pre-calculated.
+
+---
+
+### 8️⃣ **Overtake Formula**
+
+$$
+OvertakeScore = (Attacker.Overtaking - Defender.Defending) + \frac{Attacker.Aggression}{5} + Random(-5, 5)
+$$
+
+* **Stats used:** Overtaking, Defending, Aggression
+* **What it does:**
+
+  * Determines if a car close behind can **overtake the one in front**.
+  * Random(-5,5) adds drama.
+  * Checked **only when cars are within \~0.5s gap**.
+
+---
+
+### 9️⃣ **Crash Chance**
+
+$$
+CrashChance = \frac{(Aggression - 50) \cdot (100 - Composure)}{5000} \times Random(0.5,1.5)
+$$
+
+* **Stats used:** Aggression, Composure
+* **What it does:**
+
+  * Small probability per tick/lap to **retire due to crash**.
+
+---
+
+### 🔟 **Mechanical Failure Chance**
+
+$$
+FailureChance = \frac{(100 - Durability) \cdot (100 - Condition\%)}{10000} \times Random(0.5,1.5)
+$$
+
+* **Stats used:** Durability, Condition%
+* **What it does:**
+
+  * Small probability per tick/lap to **retire due to mechanical failure**.
+
+---
+
+### 1️⃣1️⃣ **Tire Blowout Chance**
+
+$$
+BlowoutChance = \frac{\max(0, TireWear\%-100)}{1000} \times Random(0.5,1.5)
+$$
+
+* **Stats used:** TireWear
+* **What it does:**
+
+  * Chance to retire if tires exceed 100% wear.
+
+---
+
+# 🏁 How Race Metrics Are Determined & Shown
+
+| Metric                        | How Calculated                                                            | Display                                |
+| ----------------------------- | ------------------------------------------------------------------------- | -------------------------------------- |
+| **Position**                  | Sort all drivers by `distanceTraveled` per tick. Swap if overtakes occur. | 1st, 2nd, 3rd… live updates each tick. |
+| **Lap Time**                  | Accumulate `Δt` per lap for each driver. Reset at lap end.                | Shown lap-by-lap.                      |
+| **Best Lap Time**             | Keep track of the **lowest lapTime** achieved by driver.                  | Display as “Best Lap” on UI.           |
+| **Gap to Leader / Car Ahead** | `distanceTraveled` difference converted to time using **current speed**.  | "+1.2s", "-0.8s" live.                 |
+| **Status**                    | Based on raceState:                                                       |                                        |
+
+* "Racing" → active
+* "Finished" → completed all laps
+* "Retired" → DNF from crash/mechanical/tire | Show as colored badges/icons. |
+
+---
+
+✅ **Key Flow**
+
+1. **Per tick**:
+
+   * Check DNF (Crash, Failure, Tire)
+   * Update effective speed (Driver+Car stats - penalties + LapRNG)
+   * Update `distanceTraveled`
+   * Check overtakes if cars are close
+   * Sort positions
+   * Update gaps
+
+2. **Per lap**:
+
+   * Record lap time
+   * Update best lap if necessary
+   * Reduce fuel, tire wear
+
+3. **End of race**:
+
+   * Sort by laps completed & total distance/time
+   * Display positions, gaps, lap times, best lap, status
+
+---
+

@@ -1,0 +1,251 @@
+// Theme-specific styles
+// Default theme (current retro pixelated style)
+.theme-default {
+  // Uses the default variables from _variables.scss
+  // No additional overrides needed
+}
+
+// Matte black premium theme
+.theme-matte {
+  // Override CSS custom properties for matte theme
+  --color-bg: #0a0a0a;
+  --color-surface: #1a1a1a;
+  --color-surface-2: #2a2a2a;
+  --color-primary: #ffffff;
+  --color-secondary: #f0f0f0;
+  --color-accent: #00ff88;
+  --color-success: #00ff88;
+  --color-warning: #ffb800;
+  --color-danger: #ff4757;
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.7);
+  
+  // Matte theme specific variables
+  --matte-glow: rgba(255, 255, 255, 0.1);
+  --matte-shine: rgba(255, 255, 255, 0.05);
+  --matte-border: rgba(255, 255, 255, 0.1);
+  --matte-shadow: rgba(0, 0, 0, 0.8);
+  
+  // Background with subtle shine effect
+  background: 
+    radial-gradient(circle at 20% 20%, var(--matte-shine) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, var(--matte-shine) 0%, transparent 50%),
+    linear-gradient(135deg, var(--color-bg) 0%, #111111 100%);
+  
+  // Remove pixelated background pattern for matte theme
+  background-image: 
+    radial-gradient(circle at 20% 20%, var(--matte-shine) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, var(--matte-shine) 0%, transparent 50%),
+    linear-gradient(135deg, var(--color-bg) 0%, #111111 100%);
+  background-size: 100% 100%;
+  background-position: 0 0;
+  
+  // Card styling with matte finish
+  .card {
+    background: linear-gradient(145deg, var(--color-surface) 0%, #1f1f1f 100%);
+    border: 1px solid var(--matte-border);
+    box-shadow: 
+      0 8px 32px var(--matte-shadow),
+      inset 0 1px 0 var(--matte-glow),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    
+    &:hover {
+      box-shadow: 
+        0 12px 48px var(--matte-shadow),
+        inset 0 1px 0 var(--matte-glow),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+  
+  // Button styling with matte finish
+  .button-primary {
+    background: linear-gradient(145deg, var(--color-primary) 0%, #e0e0e0 100%);
+    color: var(--color-bg);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    font-weight: 600;
+    
+    &:hover {
+      background: linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+  .button-secondary {
+    background: linear-gradient(145deg, var(--color-surface) 0%, #2a2a2a 100%);
+    color: var(--color-text);
+    border: 1px solid var(--matte-border);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 var(--matte-glow);
+    border-radius: 8px;
+    
+    &:hover {
+      background: linear-gradient(145deg, #2a2a2a 0%, #3a3a3a 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+    }
+  }
+  
+  // Input styling
+  input, textarea, select {
+    background: linear-gradient(145deg, var(--color-surface) 0%, #1f1f1f 100%);
+    border: 1px solid var(--matte-border);
+    color: var(--color-text);
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.3),
+      0 1px 0 var(--matte-glow);
+    border-radius: 8px;
+    
+    &:focus {
+      border-color: var(--color-accent);
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 0 2px rgba(0, 255, 136, 0.2),
+        0 1px 0 var(--matte-glow);
+    }
+  }
+  
+  // Navigation styling
+  .nav-item {
+    background: linear-gradient(145deg, var(--color-surface) 0%, #1f1f1f 100%);
+    border: 1px solid var(--matte-border);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 var(--matte-glow);
+    
+    &.active {
+      background: linear-gradient(145deg, var(--color-primary) 0%, #e0e0e0 100%);
+      color: var(--color-bg);
+      box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    
+    &:hover:not(.active) {
+      background: linear-gradient(145deg, #2a2a2a 0%, #3a3a3a 100%);
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+  }
+  
+  // Typography with subtle glow
+  h1, h2, h3, h4, h5, h6 {
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.1),
+      0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  // Accent colors with glow effects
+  .color-accent {
+    color: var(--color-accent);
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+  }
+  
+  .color-primary {
+    color: var(--color-primary);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+  
+  .color-secondary {
+    color: var(--color-secondary);
+    text-shadow: 0 0 8px rgba(240, 240, 240, 0.2);
+  }
+  
+  // Muted text with subtle glow
+  .muted {
+    color: var(--color-text-muted);
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.05);
+  }
+  
+  // Special effects for matte theme
+  .matte-glow {
+    box-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.1),
+      0 0 40px rgba(255, 255, 255, 0.05);
+  }
+  
+  .matte-shine {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+  }
+  
+  // Animation adjustments for matte theme
+  @keyframes matteGlow {
+    0%, 100% { 
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.1),
+        0 0 40px rgba(255, 255, 255, 0.05);
+    }
+    50% { 
+      box-shadow: 
+        0 0 30px rgba(255, 255, 255, 0.15),
+        0 0 60px rgba(255, 255, 255, 0.08);
+    }
+  }
+  
+  .animate-matte-glow {
+    animation: matteGlow 3s ease-in-out infinite;
+  }
+  
+  // Race-specific styling for matte theme
+  .current-user {
+    background: linear-gradient(145deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 255, 136, 0.05) 100%);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    box-shadow: 
+      0 0 20px rgba(0, 255, 136, 0.2),
+      inset 0 1px 0 rgba(0, 255, 136, 0.1);
+  }
+  
+  .gold {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.2),
+      inset 0 1px 0 rgba(255, 215, 0, 0.1);
+  }
+  
+  .silver {
+    background: linear-gradient(145deg, rgba(192, 192, 192, 0.1) 0%, rgba(192, 192, 192, 0.05) 100%);
+    border: 1px solid rgba(192, 192, 192, 0.3);
+    box-shadow: 
+      0 0 20px rgba(192, 192, 192, 0.2),
+      inset 0 1px 0 rgba(192, 192, 192, 0.1);
+  }
+  
+  .bronze {
+    background: linear-gradient(145deg, rgba(205, 127, 50, 0.1) 0%, rgba(205, 127, 50, 0.05) 100%);
+    border: 1px solid rgba(205, 127, 50, 0.3);
+    box-shadow: 
+      0 0 20px rgba(205, 127, 50, 0.2),
+      inset 0 1px 0 rgba(205, 127, 50, 0.1);
+  }
+}

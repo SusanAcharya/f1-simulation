@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { authAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import { useParams } from 'react-router-dom'
 
 // Extended user profile type that includes driver, car, and race stats
@@ -27,6 +28,7 @@ type ExtendedUserProfile = {
 export default function Profile() {
   const { userId } = useParams()
   const { isAuthenticated, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const [selectedProfilePic, setSelectedProfilePic] = useState(1)
   const [selectedCarPic, setSelectedCarPic] = useState(1)
   const [showProfilePicSelector, setShowProfilePicSelector] = useState(false)
@@ -199,20 +201,77 @@ export default function Profile() {
 
   return (
     <div className="page container">
-      <motion.h1 
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        style={{ 
-          fontSize: '3rem',
-          background: 'linear-gradient(45deg, #e94560, #00d4aa)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          marginBottom: '2rem'
-        }}
-      >
-        👤 {isOwnProfile ? 'My Profile' : `${displayProfile.username}'s Profile`}
-      </motion.h1>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '2rem',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
+        <motion.h1 
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{ 
+            fontSize: 'clamp(2rem, 5vw, 3rem)',
+            background: 'linear-gradient(45deg, #e94560, #00d4aa)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            margin: 0,
+            flex: 1,
+            minWidth: '200px'
+          }}
+        >
+          👤 {isOwnProfile ? 'My Profile' : `${displayProfile.username}'s Profile`}
+        </motion.h1>
+        
+        {isOwnProfile && (
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 12,
+              flexShrink: 0
+            }}
+          >
+            <span style={{ 
+              fontSize: '14px', 
+              color: '#ccc'
+            }} className="mobile-hidden">
+              Theme:
+            </span>
+            <motion.button
+              className="button-secondary"
+              onClick={toggleTheme}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 16px',
+                fontSize: '14px',
+                minWidth: '120px',
+                justifyContent: 'center',
+                borderRadius: '8px'
+              }}
+            >
+              <span>{theme === 'default' ? '🎮 Retro' : '✨ Matte'}</span>
+              <motion.div
+                animate={{ rotate: theme === 'matte' ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ fontSize: '16px' }}
+              >
+                {theme === 'default' ? '🌙' : '☀️'}
+              </motion.div>
+            </motion.button>
+          </motion.div>
+        )}
+      </div>
       
       <div className="grid-2" style={{ marginBottom: 16 }}>
         {/* Profile Info Card */}

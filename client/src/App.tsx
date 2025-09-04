@@ -14,6 +14,7 @@ import LiveRace from './pages/LiveRace'
 import RaceHistory from './pages/RaceHistory'
 import Leaderboard from './pages/Leaderboard'
 import { AuthProvider, ProtectedRoute } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import SetupGuard from './components/SetupGuard'
 
 function TopNav() {
@@ -524,27 +525,29 @@ function Landing() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot" element={<Forgot />} />
-            <Route path="/setup" element={<ProtectedRoute><Setup /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><SetupGuard><Dashboard /></SetupGuard></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><SetupGuard><Profile /></SetupGuard></ProtectedRoute>} />
-            <Route path="/profile/:userId" element={<ProtectedRoute><SetupGuard><Profile /></SetupGuard></ProtectedRoute>} />
-            <Route path="/garage" element={<ProtectedRoute><SetupGuard><Garage /></SetupGuard></ProtectedRoute>} />
-            <Route path="/driver" element={<ProtectedRoute><SetupGuard><Driver /></SetupGuard></ProtectedRoute>} />
-            <Route path="/facilities" element={<ProtectedRoute><SetupGuard><Facilities /></SetupGuard></ProtectedRoute>} />
-            <Route path="/race" element={<ProtectedRoute><SetupGuard><LiveRace /></SetupGuard></ProtectedRoute>} />
-            <Route path="/history" element={<ProtectedRoute><SetupGuard><RaceHistory /></SetupGuard></ProtectedRoute>} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Layout>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot" element={<Forgot />} />
+              <Route path="/setup" element={<ProtectedRoute><Setup /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><SetupGuard><Dashboard /></SetupGuard></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><SetupGuard><Profile /></SetupGuard></ProtectedRoute>} />
+              <Route path="/profile/:userId" element={<ProtectedRoute><SetupGuard><Profile /></SetupGuard></ProtectedRoute>} />
+              <Route path="/garage" element={<ProtectedRoute><SetupGuard><Garage /></SetupGuard></ProtectedRoute>} />
+              <Route path="/driver" element={<ProtectedRoute><SetupGuard><Driver /></SetupGuard></ProtectedRoute>} />
+              <Route path="/facilities" element={<ProtectedRoute><SetupGuard><Facilities /></SetupGuard></ProtectedRoute>} />
+              <Route path="/race" element={<ProtectedRoute><SetupGuard><LiveRace /></SetupGuard></ProtectedRoute>} />
+              <Route path="/history" element={<ProtectedRoute><SetupGuard><RaceHistory /></SetupGuard></ProtectedRoute>} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Layout>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

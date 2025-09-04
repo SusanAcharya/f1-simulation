@@ -15,32 +15,25 @@ export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+) => {
   try {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1] // Bearer TOKEN
 
     if (!token) {
-      res.status(401).json({ error: 'Access token required' })
-      return
+      return res.status(401).json({ error: 'Access token required' })
     }
 
-    const secret = process.env.JWT_SECRET
-    if (!secret) {
-      res.status(500).json({ error: 'JWT secret not configured' })
-      return
-    }
-    const decoded = jwt.verify(token, secret as jwt.Secret) as JwtPayload
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
     
     // Verify user still exists
     const user = await User.findById(decoded.userId).select('_id username email')
     if (!user) {
-      res.status(401).json({ error: 'User not found' })
-      return
+      return res.status(401).json({ error: 'User not found' })
     }
 
     req.user = {
-      id: user.id,
+      id: user._id.toString(),
       username: user.username,
       email: user.email
     }
@@ -48,9 +41,8 @@ export const authenticateToken = async (
     next()
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
-      res.status(403).json({ error: 'Invalid token' })
-      return
+      return res.status(403).json({ error: 'Invalid token' })
     }
-    res.status(500).json({ error: 'Authentication error' })
+    return res.status(500).json({ error: 'Authentication error' })
   }
 }

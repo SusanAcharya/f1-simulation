@@ -407,9 +407,8 @@ export default function LiveRace() {
                 <tr>
                   <th>Pos</th>
                   <th>Driver</th>
-                  <th>Lap</th>
-                  <th>Current Lap</th>
-                  <th>Best Lap</th>
+                  <th>Lap Progress</th>
+                  <th>Current/Best</th>
                   <th>Gap</th>
                   <th>Condition</th>
                   <th>Status</th>
@@ -483,23 +482,74 @@ export default function LiveRace() {
                       </div>
                     </td>
                     
-                    <td style={{ textAlign: 'center', fontWeight: 'bold', color: '#00d4aa' }}>
-                      {participant.currentLap}/{raceState.totalLaps}
+                    <td style={{ textAlign: 'center', minWidth: '120px' }}>
+                      <div style={{ 
+                        width: '100%', 
+                        height: '20px', 
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        position: 'relative'
+                      }}>
+                        <div style={{
+                          width: `${Math.max(0, Math.min(100, participant.lapProgress))}%`,
+                          height: '100%',
+                          background: participant.retired ? '#e94560' : 
+                                     participant.position === 1 ? 'linear-gradient(90deg, #ffd700, #ffed4e)' :
+                                     participant.position === 2 ? 'linear-gradient(90deg, #c0c0c0, #a8a8a8)' :
+                                     participant.position === 3 ? 'linear-gradient(90deg, #cd7f32, #b8860b)' :
+                                     'linear-gradient(90deg, #00d4aa, #00ff88)',
+                          transition: 'width 0.3s ease',
+                          borderRadius: '10px'
+                        }} />
+                        <div style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          fontSize: '10px',
+                          fontWeight: 'bold',
+                          color: '#fff',
+                          textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
+                        }}>
+                          {participant.lapProgress.toFixed(1)}%
+                        </div>
+                      </div>
+                      <div style={{ 
+                        fontSize: '11px', 
+                        color: '#888', 
+                        marginTop: '2px',
+                        textAlign: 'center'
+                      }}>
+                        Lap {participant.currentLap}/{raceState.totalLaps}
+                      </div>
                     </td>
                     
-                    <td className="lap-time">
-                      {participant.lapTime}
-                    </td>
-                    
-                    <td className="best-lap">
-                      {participant.bestLap}
+                    <td style={{ textAlign: 'center', minWidth: '80px' }}>
+                      <div style={{ fontSize: '12px', lineHeight: '1.2' }}>
+                        <div style={{ 
+                          color: '#00d4aa', 
+                          fontWeight: 'bold',
+                          marginBottom: '2px'
+                        }}>
+                          {participant.lapTime}
+                        </div>
+                        <div style={{ 
+                          color: '#f5a623', 
+                          fontSize: '10px',
+                          opacity: 0.8
+                        }}>
+                          {participant.bestLap}
+                        </div>
+                      </div>
                     </td>
                     
                     <td className="gap">
                       {participant.gap}
                     </td>
                     <td style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                      {Math.max(0, Math.min(100, participant.car?.condition ?? 0))}%
+                      {(Math.max(0, Math.min(100, participant.car?.condition ?? 0))).toFixed(1)}%
                     </td>
                     
                     <td className={`status ${participant.retired ? 'retired' : 'running'}`}>
