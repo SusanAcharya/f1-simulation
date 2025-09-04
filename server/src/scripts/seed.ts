@@ -124,7 +124,7 @@ const seedData = async () => {
 
       // Create driver with user ID
       const driver = new Driver({
-        userId: user._id.toString(),
+        userId: user.id,
         name: `${userData.username} Racer`,
         stats: {
           cornering: 45 + Math.floor(Math.random() * 20),
@@ -140,7 +140,7 @@ const seedData = async () => {
 
       // Create car with user ID
       const car = new Car({
-        userId: user._id.toString(),
+        userId: user.id,
         name: `${userData.username}'s Speedster`,
         stats: {
           speed: 50 + Math.floor(Math.random() * 20),
@@ -159,8 +159,8 @@ const seedData = async () => {
       cars.push(car)
 
       // Update user with driver and car IDs
-      user.driverId = driver._id.toString()
-      user.carId = car._id.toString()
+      user.driverId = driver.id
+      user.carId = car.id
       await user.save()
     }
 
@@ -183,7 +183,7 @@ const seedData = async () => {
 
     for (let i = 0; i < 8; i++) {
       const startTime = new Date(now.getTime() + (i * 2 + 1) * 60 * 60 * 1000) // Every 2 hours starting from 1 hour from now
-      const participants = users.slice(0, 3 + Math.floor(Math.random() * 3)).map(u => u._id.toString())
+      const participants = users.slice(0, 3 + Math.floor(Math.random() * 3)).map(u => u.id)
       
       const race = new Race({
         name: `Race ${i + 1}`,
